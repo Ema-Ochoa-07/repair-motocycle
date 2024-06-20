@@ -10,21 +10,19 @@ import { PostgresDatabase } from "./data"
 
 async function main () {
 
-    //CAMBIAR POR LA NUEVA BD
-
-    const postgres = new PostgresDatabase({
-        host: 'ep-steep-limit-a55j8wuz.us-east-2.aws.neon.tech',
+        const postgres = new PostgresDatabase({
+        host: 'ep-white-boat-a5qxd7kj.us-east-2.aws.neon.tech',
         port:5432,
-        username: 'videogamedb_owner',
-        password: 'okpN4EvH8yzn',
-        database: 'videogamedb'
+        username: 'repairmotodb_owner',
+        password: 'T7Nd4RkZyHPU',
+        database: 'repairmotodb'
 
     })
 
     await postgres.connect()
 
     const server = new Server({
-        port:3000,
+        port:3001,
         routes: AppRouter.routes
     })
     await server.start()
