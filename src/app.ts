@@ -2,6 +2,7 @@ import "reflect-metadata"
 import { AppRouter } from "./presentation/routes"
 import { Server } from "./presentation/server"
 import { PostgresDatabase } from "./data"
+import { envs } from "./config/env"
 
 
 (async() =>{
@@ -11,11 +12,11 @@ import { PostgresDatabase } from "./data"
 async function main () {
 
         const postgres = new PostgresDatabase({
-        host: 'ep-white-boat-a5qxd7kj.us-east-2.aws.neon.tech',
-        port:5432,
-        username: 'repairmotodb_owner',
-        password: 'T7Nd4RkZyHPU',
-        database: 'repairmotodb'
+        host: envs.DB_HOST,
+        port:envs.DB_PORT,
+        username: envs.DB_USERNAME,
+        password: envs.DB_PASSWORD,
+        database: envs.DB_DATABASE
 
     })
 
