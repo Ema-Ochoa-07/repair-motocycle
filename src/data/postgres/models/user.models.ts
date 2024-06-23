@@ -1,7 +1,12 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
+enum Role{
+    CLIENT =  'CLIENT',
+    EMPLOYEE = 'EMPLOYEE'
+}
+
 enum Status{
-    ACTVE = 'ACTIVE',
+    ACTIVE = 'ACTIVE',
     INACTIVE = 'INACTIVE'
 }
 
@@ -11,31 +16,41 @@ export class User extends BaseEntity{
     id: number
 
     @Column({
+        type: 'varchar',
         nullable: false,
-        length:80
+        length:100
+
     })
     name: string
 
     @Column({
-        unique: false,
+        type: 'varchar',
         nullable: false,
-        length:100
+        length:150
     })
     email: string
     
 
     @Column({
-        unique: false,
+        type: 'varchar',
         nullable: false,
-        length:50
+        length:255
     })
     password: string
+
+    @Column({
+        unique: false,
+        enum: Role,
+        default: Role.CLIENT
+
+    })
+    role: Role
 
 
     @Column({
         nullable: true,
         enum: Status,
-        default: Status.ACTVE
+        default: Status.ACTIVE
     })
     status: Status
 

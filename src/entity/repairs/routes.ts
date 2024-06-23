@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { RepairController } from "./controller";
+import { RepairService } from "../../presentation/services/repair.service";
 
 export class RepairsRoutes{
 
@@ -7,7 +8,8 @@ export class RepairsRoutes{
 
         const router = Router()
 
-        const controller = new RepairController()
+        const repairService = new RepairService()
+        const controller = new RepairController(repairService)
 
         router.post('/', controller.createRepair)
         router.get('/', controller.getRepair)

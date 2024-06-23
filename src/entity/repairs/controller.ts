@@ -1,33 +1,85 @@
 import { Request, Response } from "express";
+import { RepairService } from "../../presentation/services/repair.service";
+import { json } from "stream/consumers";
+import { error } from "console";
 
 
 export class RepairController{
 
-constructor(){}
+constructor(
+    public readonly repairService: RepairService
+){}
 
     createRepair = (req:Request, res: Response) => {
-        const { id, date, status } = req.body
-        return res.status(201).json({ id, date, status }) 
+        const { date } = req.body
+        this.repairService.createRepair({ date })
+        .then(repair => {
+            return res.status(201).json(repair) 
+        })
+        .catch((error: any) =>{
+            return res.status(500).json(error)
+        })
+        
     }
 
     
     getRepair = ( req:Request, res:Response ) =>{
-        return res.status(200).json({ message: `List Repairs` })
+        this.repairService.findRepairsAll()
+          .then(repair => {
+              return res.status(200).json(repair)
+          })
+          .catch(error => {
+            return res.status(500).json(error)
+          })
     }
 
     getRepairById = (req:Request, res:Response) => {
         const { id } = req.params
-        return res.status(200).json({ message: `The reapir with id ${id} was found`})
+        if(isNaN(+id)){
+            return res.status(400).json({ message: 'El id debe ser un número' })
+        }
+        this.repairService.findRepairById(+id)
+        .then(repair => {
+            return res.status(200).json(repair)
+        })
+        .catch(error => {
+            return res.status(500).json(error)
+        })
+
     }
 
     updateRepair = (req:Request, res:Response) =>{
-        const { id, date, status } = req.params
-        return res.status(200).json({ message: `The repair with id ${id} was change` })
+        const { id } = req.params
+        const { date } = req.body
+
+        if(isNaN(+id)){
+            return res.status(200).json({message: 'El id debe ser un número'})
+        }
+
+        this.repairService.updateRepair({ date }, +id)
+        .then(repair => {
+            return res.status(200).json(repair)
+        })
+        .catch(error => {
+            return res.status(500).json(error)
+        })
+
     }
 
     deleteRepair = (req:Request, res:Response) =>{
         const { id } = req.params
-        return res.status(500).json()
+        
+        if(isNaN(+id)){
+            return res.status(400).json('El id debe ser un número')
+        }
+        
+        this.repairService.deleteRepair(+id)
+        .then(repair =>{
+            return res.status(200).json(repair)
+        })
+        .catch(error => {
+            return res.status(500).json('Internal Server Error')
+        })
     }
 
 }
