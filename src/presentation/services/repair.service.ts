@@ -58,7 +58,7 @@ export class RepairService{
     async updateRepair(repairData: any, id: number){
         const repair = await this.findRepairById(id)
   
-        repair.date = new repairData.date
+        repair.date = repairData.date
         repair.status = Status.PENDING
         repair.user_id = repairData.userId
   
