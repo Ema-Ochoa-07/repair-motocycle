@@ -14,7 +14,10 @@ export class RepairService{
 
         try {
             const repair = new Repair()
-            repair.date = new repairData.date
+            repair.date = repairData.date
+            repair.status = Status.PENDING
+            repair.user_id = repairData.userId
+
             await repair.save()
             return repair
         
@@ -56,6 +59,8 @@ export class RepairService{
         const repair = await this.findRepairById(id)
   
         repair.date = new repairData.date
+        repair.status = Status.PENDING
+        repair.user_id = repairData.userId
   
         try {
           await repair.save() 

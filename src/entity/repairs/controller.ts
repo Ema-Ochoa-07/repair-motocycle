@@ -11,8 +11,9 @@ constructor(
 ){}
 
     createRepair = (req:Request, res: Response) => {
-        const { date } = req.body
-        this.repairService.createRepair({ date })
+        const { date, userId} = req.body
+
+        this.repairService.createRepair({ date, userId })
         .then(repair => {
             return res.status(201).json(repair) 
         })

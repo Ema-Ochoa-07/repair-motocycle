@@ -8,7 +8,7 @@ export class UserController{
      ){}
 
     createUser = (req:Request, res:Response) => {
-        const {name, role, email, password} = req.body
+        const {name, email, password} = req.body
         this.userService.createUser({ name, email, password})
         .then(user =>{
             return res.status(201).json({name, email, password})
