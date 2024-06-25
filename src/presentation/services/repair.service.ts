@@ -74,7 +74,7 @@ export class RepairService{
       async deleteRepair(id: number){
         const repair = await this.findRepairById(id)
 
-        repair.status = Status.PENDING
+        repair.status = Status.CANCELLED
 
         try {
             await repair.save()
