@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { UserService } from "../../presentation/services/user.service"
 import { error } from "console"
-import {CreateUserDto, CustomErrors } from "../../domain"
+import {CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain"
 
 export class UserController{
     constructor( 
@@ -21,6 +21,7 @@ export class UserController{
         // const {name, email, password} = req.body
         const  [error, createUserDto] = CreateUserDto.create(req.body)
         if(error) return res.status(422).json({message: error})
+        // this.userService.createUser({ name, email, password })
         this.userService.createUser( createUserDto! )
 
         .then(user =>{
@@ -53,12 +54,13 @@ export class UserController{
 
     updateUser = (req:Request, res:Response) =>{
         const { id } = req.params
-        const {name, role, email, password} = req.body
+        const [error, updateUserDto] = UpdateUserDto.update(req.body)
+        if(error) return res.status(422).json({message: error})
 
         if(isNaN(+id)){
             return res.status(400).json({message: 'El id debe ser un número'})
         }
-        this.userService.updateUser({name, email, password}, +id)
+        this.userService.updateUser(updateUserDto!, +id)
         .then(user =>{
             return res.status(200).json(user)
         })   

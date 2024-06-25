@@ -1,5 +1,5 @@
 import { User } from "../../data";
-import { CreateUserDto, CustomErrors } from "../../domain";
+import { CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain";
 
 enum Status{
     ACTIVE = 'ACTIVE',
@@ -52,7 +52,7 @@ export class UserService{
     }
 
     
-    async updateUser(userData: any, id: number){
+    async updateUser(userData: UpdateUserDto, id: number){
         const user = await this.findUserById(id)
   
         user.name = userData.name.trim()    

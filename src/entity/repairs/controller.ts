@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { RepairService } from "../../presentation/services/repair.service";
 import { json } from "stream/consumers";
 import { error } from "console";
-import { CreateRepairDto, CustomErrors } from "../../domain";
+import { CreateRepairDto, CustomErrors, UpdateRepairDto } from "../../domain";
 
 
 export class RepairController{
@@ -58,13 +58,14 @@ constructor(
 
     updateRepair = (req:Request, res:Response) =>{
         const { id } = req.params
-        const { date } = req.body
+        const [error, updateRepairDto] = UpdateRepairDto.update(req.body)
+        if(error) return res.status(422).json({message: error})            
 
         if(isNaN(+id)){
             return res.status(200).json({message: 'El id debe ser un número'})
         }
 
-        this.repairService.updateRepair({ date }, +id)
+        this.repairService.updateRepair( updateRepairDto!, +id)
         .then(repair => {
             return res.status(200).json(repair)
         })
