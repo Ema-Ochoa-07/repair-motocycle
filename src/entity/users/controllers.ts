@@ -1,20 +1,32 @@
 import { Request, Response } from "express"
 import { UserService } from "../../presentation/services/user.service"
 import { error } from "console"
+import {CreateUserDto, CustomErrors } from "../../domain"
 
 export class UserController{
     constructor( 
         public readonly userService : UserService
      ){}
 
+
+     private handleError = (error:any, res: Response) =>{
+        console.log(error)
+            if(error instanceof CustomErrors){
+                return res.status(error.statusError).json({message: error.message})
+            }
+            return res.status(500).json({message: 'Internal server Error'})
+    }
+
     createUser = (req:Request, res:Response) => {
-        const {name, email, password} = req.body
-        this.userService.createUser({ name, email, password})
+        // const {name, email, password} = req.body
+        const  [error, createUserDto] = CreateUserDto.create(req.body)
+        if(error) return res.status(422).json({message: error})
+        this.userService.createUser( createUserDto! )
+
         .then(user =>{
-            return res.status(201).json({name, email, password})
-        }).catch((error:any) => {
-            return res.status(500).json(error)
+            return res.status(201).json({user})
         })
+        .catch((error) => this.handleError(error, res))
 
         
     }
@@ -24,9 +36,7 @@ export class UserController{
         .then(user =>{
             return res.status(200).json(user)
         })
-        .catch((error: any)  => {
-            return res.status(500).json(error)
-        })
+        .catch((error) => this.handleError(error, res))
     }
 
     getUserById = (req:Request, res:Response) =>{
@@ -38,9 +48,7 @@ export class UserController{
         .then(user => {
             return res.status(200).json(user)
         })
-        .catch(error =>{
-            return res.status(500).json(error)
-        })
+        .catch((error) => this.handleError(error, res))
     }
 
     updateUser = (req:Request, res:Response) =>{
@@ -54,24 +62,23 @@ export class UserController{
         .then(user =>{
             return res.status(200).json(user)
         })   
-        .catch(error =>{
-            return res.status(400).json(error)
-        })      
+        .catch((error) => this.handleError(error, res))      
     }
 
     deleteUser = (req:Request, res:Response) =>{
         const { id } = req.params
         
         if(isNaN(+id)){
-            return res.status(400).json('El id debe ser un número')
+            if(error instanceof CustomErrors){
+                return res.status(error.statusError).json({message: error.message})
+            }
+            return res.status(500).json(error)
         }
         
         this.userService.deleteUser(+id)
         .then(user =>{
             return res.status(200).json(user)
         })
-        .catch(error => {
-            return res.status(500).json('Internal Server Error')
-        })
+        .catch((error) => this.handleError(error, res))
     }
 }

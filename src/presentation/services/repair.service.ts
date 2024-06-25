@@ -1,4 +1,5 @@
 import { Repair } from "../../data";
+import { CreateRepairDto, CustomErrors } from "../../domain";
 
 enum Status{
     PENDING = 'PENDING',
@@ -10,7 +11,7 @@ enum Status{
 export class RepairService{
     constructor() {}
 
-    async createRepair(repairData: any){
+    async createRepair(repairData: CreateRepairDto){
 
         try {
             const repair = new Repair()
@@ -30,7 +31,7 @@ export class RepairService{
         try {
             return await Repair.find()
         } catch (error) {
-            console.log(error)
+            throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
     }
 
@@ -44,13 +45,12 @@ export class RepairService{
             })
 
             if(!repair){
-                throw new Error('No existes reparación con ese id')
+                throw CustomErrors.notFound(`User with id ${id} not found`)
             }
             return repair
 
         } catch (error) {
-            throw new Error('Internal Server Error')
-            console.log(error)
+            throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
     }
 
@@ -67,7 +67,7 @@ export class RepairService{
           return repair
         } catch (error) {
           console.log(error)
-          throw new Error ('Internal Server Error')
+          throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
       }
 
@@ -80,7 +80,7 @@ export class RepairService{
             await repair.save()
             return repair
         } catch (error) {
-            throw new Error('Internal Server Error')
+            throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
       }
 }

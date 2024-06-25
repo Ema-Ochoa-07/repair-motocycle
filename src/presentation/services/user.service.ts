@@ -1,4 +1,5 @@
 import { User } from "../../data";
+import { CreateUserDto, CustomErrors } from "../../domain";
 
 enum Status{
     ACTIVE = 'ACTIVE',
@@ -8,7 +9,7 @@ enum Status{
 export class UserService{
     constructor(){}
 
-    async createUser(userData: any){
+    async createUser(userData: CreateUserDto){
         
         try {
             const user =  new User()
@@ -19,16 +20,16 @@ export class UserService{
             await user.save()
             return user
         } catch (error) {
-            console.log(error)
+            throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
     }
 
 
     async findAllUser(){
         try {
-            return await User.find()
+            return await User. find()
         } catch (error) {
-            console.log(error)
+            throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
     }
 
@@ -41,13 +42,12 @@ export class UserService{
                 }
             })
             if(!user){
-                throw new Error('No existe usuario con ese id')
+                throw CustomErrors.notFound(`User with id ${id} not found`)
             }
             return user
             
         } catch (error) {
-            throw new Error('Internal server error')
-            console.log(error)
+            throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
     }
 
@@ -64,7 +64,7 @@ export class UserService{
           return user
         } catch (error) {
           console.log(error)
-          throw new Error ('Internal Server Error')
+          throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
       }
 
@@ -77,7 +77,7 @@ export class UserService{
             await user.save()
             return user
         } catch (error) {
-            throw new Error('Internal Server Error')
+            throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
     }
 }

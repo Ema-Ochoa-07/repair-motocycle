@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { RepairService } from "../../presentation/services/repair.service";
 import { json } from "stream/consumers";
 import { error } from "console";
+import { CreateRepairDto, CustomErrors } from "../../domain";
 
 
 export class RepairController{
@@ -10,16 +11,26 @@ constructor(
     public readonly repairService: RepairService
 ){}
 
-    createRepair = (req:Request, res: Response) => {
-        const { date, userId} = req.body
 
-        this.repairService.createRepair({ date, userId })
+     private handleError = (error:any, res: Response) =>{
+        console.log(error)
+            if(error instanceof CustomErrors){
+                return res.status(error.statusError).json({message: error.message})
+            }
+            return res.status(500).json({message: 'Internal server Error'})
+    }   
+
+
+    createRepair = (req:Request, res: Response) => {
+        // const { date, userId} = req.body
+        const [error, createRepairDto] = CreateRepairDto.create(req.body)
+        if (error) return res.status(422).json({message: error})
+
+        this.repairService.createRepair(createRepairDto!)
         .then(repair => {
             return res.status(201).json(repair) 
         })
-        .catch((error: any) =>{
-            return res.status(500).json(error)
-        })
+        .catch((error) => this.handleError(error, res))
         
     }
 
@@ -29,9 +40,8 @@ constructor(
           .then(repair => {
               return res.status(200).json(repair)
           })
-          .catch(error => {
-            return res.status(500).json(error)
-          })
+          .catch((error) => this.handleError(error, res))
+
     }
 
     getRepairById = (req:Request, res:Response) => {
@@ -43,10 +53,7 @@ constructor(
         .then(repair => {
             return res.status(200).json(repair)
         })
-        .catch(error => {
-            return res.status(500).json(error)
-        })
-
+        .catch((error) => this.handleError(error, res))
     }
 
     updateRepair = (req:Request, res:Response) =>{
@@ -61,10 +68,7 @@ constructor(
         .then(repair => {
             return res.status(200).json(repair)
         })
-        .catch(error => {
-            return res.status(500).json(error)
-        })
-
+        .catch((error) => this.handleError(error, res))
     }
 
     deleteRepair = (req:Request, res:Response) =>{
@@ -78,9 +82,7 @@ constructor(
         .then(repair =>{
             return res.status(200).json(repair)
         })
-        .catch(error => {
-            return res.status(500).json('Internal Server Error')
-        })
+        .catch((error) => this.handleError(error, res))
     }
 
 }
