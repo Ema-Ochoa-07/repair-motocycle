@@ -56,8 +56,7 @@ export class UserService{
         const user = await this.findUserById(id)
   
         user.name = userData.name.trim()    
-        user.email = userData.email.toLowerCase().trim()
-        user.password = userData.password.trim()   
+        user.email = userData.email.toLowerCase().trim()  
   
         try {
           await user.save() 
