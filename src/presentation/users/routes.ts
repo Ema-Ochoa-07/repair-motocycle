@@ -14,7 +14,7 @@ export class UsersRoutes{
         const controller = new UserController(userservice)
 
         router.post('/login', controller.login)
-        router.post('/register', controller.registerUser)
+        router.post('/register', controller.createUser)
 
         router.get('/', controller.getUser)
         router.get('/:id', controller.getUserById)

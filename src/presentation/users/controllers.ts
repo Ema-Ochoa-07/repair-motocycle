@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { UserService } from "../services/user.service"
 import { error } from "console"
-import {CustomErrors, RegisterUserDto, UpdateUserDto } from "../../domain"
+import {CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain"
 
 export class UserController{
     constructor( 
@@ -25,12 +25,12 @@ export class UserController{
 
 
     //CRUD
-    registerUser = (req:Request, res:Response) => {
+    createUser = (req:Request, res:Response) => {
         // const {name, email, password} = req.body
-        const  [error, registerUserDto] = RegisterUserDto.create(req.body)
+        const  [error, createUserDto] = CreateUserDto.create(req.body)
         if(error) return res.status(422).json({message: error})
         // this.userService.createUser({ name, email, password })
-        this.userService.registerUser( registerUserDto! )
+        this.userService.createUser( createUserDto! )
 
         .then(user =>{
             return res.status(201).json(user)

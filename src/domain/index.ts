@@ -1,5 +1,5 @@
 export * from './errors/custom.errors'
-export * from './dtos/user/register-user.dto'
+export * from './dtos/user/create-user.dto'
 export * from './dtos/user/update-user.dto'
 export * from './dtos/repair/create-repair.dto'
 export * from './dtos/repair/update-repair.dto'
