@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { RepairController } from "./controller";
-import { RepairService } from "../../presentation/services/repair.service";
+import { RepairService } from "../services/repair.service";
 
 export class RepairsRoutes{
 

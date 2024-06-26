@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { UsersRoutes } from "../entity/users/routes";
-import { RepairsRoutes } from "../entity/repairs/routes";
+import { UsersRoutes } from "./users/routes";
+import { RepairsRoutes } from "./repairs/routes";
 
 export class AppRouter{
 

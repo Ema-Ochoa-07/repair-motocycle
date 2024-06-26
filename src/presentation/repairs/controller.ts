@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { RepairService } from "../../presentation/services/repair.service";
+import { RepairService } from "../services/repair.service";
 import { json } from "stream/consumers";
 import { error } from "console";
 import { CreateRepairDto, CustomErrors, UpdateRepairDto } from "../../domain";

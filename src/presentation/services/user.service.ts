@@ -1,5 +1,5 @@
 import { User } from "../../data";
-import { CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain";
+import { CustomErrors, RegisterUserDto, UpdateUserDto } from "../../domain";
 
 enum Status{
     ACTIVE = 'ACTIVE',
@@ -9,7 +9,7 @@ enum Status{
 export class UserService{
     constructor(){}
 
-    async createUser(userData: CreateUserDto){
+    async registerUser(userData: RegisterUserDto){
         
         try {
             const user =  new User()

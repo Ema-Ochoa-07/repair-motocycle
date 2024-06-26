@@ -39,6 +39,7 @@ export class User extends BaseEntity{
     password: string
 
     @Column({
+        type: 'enum',
         unique: false,
         enum: Role,
         default: Role.CLIENT
@@ -48,6 +49,7 @@ export class User extends BaseEntity{
 
 
     @Column({
+        type: 'enum',
         nullable: true,
         enum: Status,
         default: Status.ACTIVE

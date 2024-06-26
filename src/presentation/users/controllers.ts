@@ -1,14 +1,20 @@
 import { Request, Response } from "express"
-import { UserService } from "../../presentation/services/user.service"
+import { UserService } from "../services/user.service"
 import { error } from "console"
-import {CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain"
+import {CustomErrors, RegisterUserDto, UpdateUserDto } from "../../domain"
 
 export class UserController{
     constructor( 
         public readonly userService : UserService
      ){}
 
+        //LOGIN
+        login = async (req: Request, res: Response) =>{
+        return res.status(200).json({message: 'Hellow World'})
+    }
 
+
+     // REPEAT ERROR METHOD 
      private handleError = (error:any, res: Response) =>{
         console.log(error)
             if(error instanceof CustomErrors){
@@ -17,12 +23,14 @@ export class UserController{
             return res.status(500).json({message: 'Internal server Error'})
     }
 
-    createUser = (req:Request, res:Response) => {
+
+    //CRUD
+    registerUser = (req:Request, res:Response) => {
         // const {name, email, password} = req.body
-        const  [error, createUserDto] = CreateUserDto.create(req.body)
+        const  [error, registerUserDto] = RegisterUserDto.create(req.body)
         if(error) return res.status(422).json({message: error})
         // this.userService.createUser({ name, email, password })
-        this.userService.createUser( createUserDto! )
+        this.userService.registerUser( registerUserDto! )
 
         .then(user =>{
             return res.status(201).json(user)
@@ -83,4 +91,5 @@ export class UserController{
         })
         .catch((error) => this.handleError(error, res))
     }
+    
 }
