@@ -33,7 +33,7 @@ export class UserController{
         this.userService.createUser( createUserDto! )
 
         .then(user =>{
-            return res.status(201).json(user)
+            return res.status(200).json(user)
         })
         .catch((error) => this.handleError(error, res))
 

@@ -1,3 +1,4 @@
+import { bcryptAdapter } from "../../config";
 import { User } from "../../data";
 import { CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain";
 
@@ -9,16 +10,23 @@ enum Status{
 export class UserService{
     constructor(){}
 
-    async createUser(userData: CreateUserDto){
-        
+    async createUser(createUserDto: CreateUserDto){
+
+        const exitsUser = await User.findOne({
+            where:{
+                email: createUserDto.email,
+                status: Status.ACTIVE
+            }            
+        })
+        if(exitsUser)
+            throw CustomErrors.badRequest('Email already exit')       
         try {
             const user =  new User()
-            user.name = userData.name.trim()
-            user.email = userData.email.toLowerCase().trim()
-            user.password = userData.password.trim() 
+            user.name = createUserDto.name
+            user.email = createUserDto.email
+            user.password = bcryptAdapter.hash(createUserDto.password)
             
-            await user.save()
-            return user
+            return await user.save()
         } catch (error) {
             throw CustomErrors.internalServer('Internal Server Error 🧨')
         }

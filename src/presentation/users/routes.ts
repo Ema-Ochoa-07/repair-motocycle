@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { UserController } from "./controllers";
 import { UserService } from "../services/user.service";
-import { RepairService } from "../services/repair.service";
 
 export class UsersRoutes{
 
@@ -14,7 +13,7 @@ export class UsersRoutes{
         const controller = new UserController(userservice)
 
         router.post('/login', controller.login)
-        router.post('/register', controller.createUser)
+        router.post('/', controller.createUser)
 
         router.get('/', controller.getUser)
         router.get('/:id', controller.getUserById)
