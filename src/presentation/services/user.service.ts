@@ -1,4 +1,5 @@
 import { bcryptAdapter } from "../../config";
+import { JwtAdapter } from "../../config/jwt.adapter";
 import { User } from "../../data";
 import { CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain";
 
@@ -19,14 +20,25 @@ export class UserService{
             }            
         })
         if(exitsUser)
-            throw CustomErrors.badRequest('Email already exit')       
+            throw CustomErrors.badRequest('Email already exit')  
+        
+        const user =  new User()
+        user.name = createUserDto.name
+        user.email = createUserDto.email
+        user.password = bcryptAdapter.hash(createUserDto.password)
+        // user.password = createUserDto.password
+
         try {
-            const user =  new User()
-            user.name = createUserDto.name
-            user.email = createUserDto.email
-            user.password = bcryptAdapter.hash(createUserDto.password)
+                      
+            await user.save()
+            const token = await JwtAdapter.generateToken({ id: user.id })
+            if(!token) throw CustomErrors.internalServer('Error while creating JWT')
             
-            return await user.save()
+            return {
+                token: token,
+                user: user,
+            }
+
         } catch (error) {
             throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
