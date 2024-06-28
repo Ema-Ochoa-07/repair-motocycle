@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { UserController } from "./controllers";
 import { UserService } from "../services/user.service";
+import { EmailService } from "../services/email.service";
+import { envs } from "../../config";
 
 export class UsersRoutes{
 
@@ -9,7 +11,12 @@ export class UsersRoutes{
         const router = Router()
 
         // const repairservice =  new RepairService()
-        const userservice = new UserService()
+        const emailservice = new EmailService(
+            envs.MAILER_SERVICE,
+            envs.MAILER_EMAIL,
+            envs.MAILER_SECRET_KEY
+        )
+        const userservice = new UserService(emailservice)
         const controller = new UserController(userservice)
 
         router.post('/login', controller.login)

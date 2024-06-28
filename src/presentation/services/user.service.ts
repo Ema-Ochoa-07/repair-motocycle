@@ -1,7 +1,7 @@
-import { bcryptAdapter } from "../../config";
-import { JwtAdapter } from "../../config/jwt.adapter";
+import { JwtAdapter, bcryptAdapter } from "../../config";
 import { User } from "../../data";
 import { CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain";
+import { EmailService } from "./email.service";
 
 enum Status{
     ACTIVE = 'ACTIVE',
@@ -9,7 +9,9 @@ enum Status{
 }
 
 export class UserService{
-    constructor(){}
+    constructor(
+        private readonly emailservice: EmailService
+    ){}
 
     async createUser(createUserDto: CreateUserDto){
 
