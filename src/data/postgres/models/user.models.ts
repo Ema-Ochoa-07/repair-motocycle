@@ -59,6 +59,13 @@ export class User extends BaseEntity{
     status: Status
 
 
+    
+    @Column({
+        type: 'boolean',
+        default: false
+    })
+    emailValidated: boolean
+
     @CreateDateColumn()
     create_at: Date
 

@@ -14,7 +14,8 @@ export class UsersRoutes{
         const emailservice = new EmailService(
             envs.MAILER_SERVICE,
             envs.MAILER_EMAIL,
-            envs.MAILER_SECRET_KEY
+            envs.MAILER_SECRET_KEY,
+            envs.SEND_EMAIL
         )
         const userservice = new UserService(emailservice)
         const controller = new UserController(userservice)
@@ -26,6 +27,8 @@ export class UsersRoutes{
         router.get('/:id', controller.getUserById)
         router.patch('/:id', controller.updateUser)
         router.delete('/:id', controller.deleteUser)
+
+        router.get('/validator-email/:token', controller.validateEmail)
 
 
         return router      

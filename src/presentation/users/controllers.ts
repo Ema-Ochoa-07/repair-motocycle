@@ -2,6 +2,8 @@ import { Request, Response } from "express"
 import { UserService } from "../services/user.service"
 import { error } from "console"
 import {CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain"
+import { threadId } from "worker_threads"
+import { LoginUserDto } from "../../domain/dtos/user/login-user.dto"
 
 export class UserController{
     constructor( 
@@ -35,9 +37,20 @@ export class UserController{
         .then(user =>{
             return res.status(200).json(user)
         })
-        .catch((error) => this.handleError(error, res))
+        .catch((error) => this.handleError(error, res))        
+    }
 
-        
+    
+    validateEmail = (req: Request, res: Response) => {
+        const  { token } = req.params
+        this.userService.validateEmail(token)
+        .then(() => {
+            res.json('Email was validated properly')
+        })
+        .catch(error =>{
+            this.handleError(error, res)
+        })
+
     }
 
     getUser = (req:Request, res:Response) => {
@@ -91,5 +104,9 @@ export class UserController{
         })
         .catch((error) => this.handleError(error, res))
     }
-    
+
+    // login = async (req:Request, res:Response) =>{
+    //     const [error, loginUserDto] = LoginUserDto.create(req.body)
+    //     if(error) return 
+    // }
 }

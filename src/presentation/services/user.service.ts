@@ -1,7 +1,9 @@
-import { JwtAdapter, bcryptAdapter } from "../../config";
+import { Subject } from "typeorm/persistence/Subject";
+import { JwtAdapter, bcryptAdapter, envs } from "../../config";
 import { User } from "../../data";
 import { CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain";
 import { EmailService } from "./email.service";
+import { LoginUserDto } from "../../domain/dtos/user/login-user.dto";
 
 enum Status{
     ACTIVE = 'ACTIVE',
@@ -33,6 +35,9 @@ export class UserService{
         try {
                       
             await user.save()
+
+            await this.sendEmailValidationLink(user.email)
+
             const token = await JwtAdapter.generateToken({ id: user.id })
             if(!token) throw CustomErrors.internalServer('Error while creating JWT')
             
@@ -43,6 +48,53 @@ export class UserService{
 
         } catch (error) {
             throw CustomErrors.internalServer('Internal Server Error 🧨')
+        }
+    }
+
+     sendEmailValidationLink = async (email:string) =>{
+        const token = await JwtAdapter.generateToken( {email} )
+        if(!token) throw CustomErrors.internalServer('Error getting token')
+            
+        const link = `${envs.WEBSERVICE_URL}/user/validate-email/${token}`
+        const html = `
+        <h1> Validate your email </html>
+        <p> Click on the following link to validate your email </p>
+        <a href= "${link}"> Validate your email ${email} </a>
+        `
+        const isSent = 
+        this.emailservice.sendEmail(
+            {
+                to: email,
+                subject: 'validate your email',
+                htmlBody:html
+            }
+        )
+        if
+        (!isSent) throw CustomErrors.internalServer('Error sending email')
+        return true         
+    }
+
+
+    validateEmail = async (token: string) => {
+        const payload = await JwtAdapter.validateToken(token)
+        if(!payload) throw CustomErrors.unAuthorized('Invalid Token')
+
+        const { email } = payload as { email:string }
+        if(!email) throw CustomErrors.internalServer('Email not in token')
+
+        const user = await User.findOne({
+            where:{
+                email: email
+            }
+        })
+        if(!user) throw CustomErrors.internalServer('Email not exist')
+        user.emailValidated = true
+        
+        try {
+            await user.save()
+            return true
+        } catch (error) {
+            throw CustomErrors.internalServer('Somenthing went very wrong')
         }
     }
 
@@ -101,4 +153,14 @@ export class UserService{
             throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
     }
+
+    // async Login(loginUserDto: LoginUserDto){
+    //     //bscar un usuario
+    //     const user = await this.findOne({
+    //         where: {
+    //             email:loginUserDto,
+    //             status:Status.ACTIVE
+    //         }
+    //     })
+    // }
 }
