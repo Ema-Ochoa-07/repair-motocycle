@@ -28,7 +28,7 @@ export class UsersRoutes{
         router.patch('/:id', controller.updateUser)
         router.delete('/:id', controller.deleteUser)
 
-        router.get('/validator-email/:token', controller.validateEmail)
+        router.get('/validate-email/:token', controller.validateEmail)
 
 
         return router      

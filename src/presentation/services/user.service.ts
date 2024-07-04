@@ -42,7 +42,7 @@ export class UserService{
             if(!token) throw CustomErrors.internalServer('Error while creating JWT')
             
             return {
-                token: token,
+                // token: token,
                 user: user,
             }
 
@@ -59,7 +59,7 @@ export class UserService{
         const html = `
         <h1> Validate your email </html>
         <p> Click on the following link to validate your email </p>
-        <a href= "${link}"> Validate your email ${email} </a>
+        <a href= "${link}"> Validate your email: ${email} </a>
         `
         const isSent = 
         this.emailservice.sendEmail(
@@ -97,7 +97,38 @@ export class UserService{
             throw CustomErrors.internalServer('Somenthing went very wrong')
         }
     }
+    
+    loginEmail = async (loginUserDto: LoginUserDto) => {
+        //1 buscar el usuario que se quiere loggear
 
+        const user = await User.findOne({
+            where:{
+                email: loginUserDto.email,
+                status: Status.ACTIVE
+            }
+        })
+
+        if(!user) throw CustomErrors.unAuthorized('Invalid credential')
+
+        //2 validar si la contraseña es correcta
+        const isMatching = bcryptAdapter.compare(loginUserDto.password, user.password)
+        if(!isMatching) throw CustomErrors.unAuthorized("Invalid credentials")
+
+        //3 generar el token
+        const token = await JwtAdapter.generateToken({id: user.id})
+        if(!token) throw CustomErrors.internalServer('Internal Server Error')
+
+        //4 enviar la información
+        return  {
+            token: token,
+            user:{
+                id: user.id,
+                email: user.email,
+                role: user.role        
+            }
+        }
+
+    }
 
     async findAllUser(){
         try {
@@ -154,13 +185,4 @@ export class UserService{
         }
     }
 
-    // async Login(loginUserDto: LoginUserDto){
-    //     //bscar un usuario
-    //     const user = await this.findOne({
-    //         where: {
-    //             email:loginUserDto,
-    //             status:Status.ACTIVE
-    //         }
-    //     })
-    // }
 }

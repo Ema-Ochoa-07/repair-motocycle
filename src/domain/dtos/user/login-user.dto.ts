@@ -9,11 +9,13 @@ export class LoginUserDto{
     ){}
 
     static create(object: {[key:string] :any}) : [string?, LoginUserDto?]{
-     const {name, password} = object
-     if(!name) return ['Missing name', undefined]
+        
+     const {email, password} = object
+
+     if(!email) return ['Missing email', undefined]
      if(!password) return ['Missing password']
 
 
-     return [undefined, new LoginUserDto(name, password)]
+     return [undefined, new LoginUserDto(email, password)]
     }
 }

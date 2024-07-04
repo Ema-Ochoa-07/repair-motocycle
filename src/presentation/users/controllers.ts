@@ -12,7 +12,18 @@ export class UserController{
 
         //LOGIN
         login = async (req: Request, res: Response) =>{
-        return res.status(200).json({message: 'Hellow World'})
+            const [error, loginUserDto ] = LoginUserDto.create(req.body)
+
+            if(error) return res.status(422).json({message: error})
+            
+                this.userService.loginEmail(loginUserDto!)
+                .then((data) =>{
+                    return res.status(200).json(data)
+                })
+                .catch((error) => {
+                    return res.status(500).json(error)
+                })
+
     }
 
 
@@ -105,8 +116,4 @@ export class UserController{
         .catch((error) => this.handleError(error, res))
     }
 
-    // login = async (req:Request, res:Response) =>{
-    //     const [error, loginUserDto] = LoginUserDto.create(req.body)
-    //     if(error) return 
-    // }
 }
