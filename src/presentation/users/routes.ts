@@ -3,7 +3,6 @@ import { UserController } from "./controllers";
 import { UserService } from "../services/user.service";
 import { EmailService } from "../services/email.service";
 import { envs } from "../../config";
-import { AuthMiddleware } from "../middlewares/middleware";
 
 export class UsersRoutes{
 
@@ -21,16 +20,15 @@ export class UsersRoutes{
         const userservice = new UserService(emailservice)
         const controller = new UserController(userservice)
         
-        router.post('/', controller.createUser)
-        router.get('/validate-email/:token', controller.validateEmail)
-        router.use(AuthMiddleware.protect)
-
+        router.post('/', controller.createUser)       
         router.post('/login', controller.login)
 
         router.get('/', controller.getUser)
         router.get('/:id', controller.getUserById)
         router.patch('/:id', controller.updateUser)
         router.delete('/:id', controller.deleteUser)
+
+        router.get('/validate-email/:token', controller.validateEmail)
 
 
         return router      
