@@ -55,11 +55,11 @@ export class UserService{
         const token = await JwtAdapter.generateToken( {email} )
         if(!token) throw CustomErrors.internalServer('Error getting token')
             
-        const link = `${envs.WEBSERVICE_URL}/user/validate-email/${token}`
+        const link = `${envs.WEBSERVICE_URL}/users/validate-email/${token}`
         const html = `
-        <h1> Validate your email </html>
-        <p> Click on the following link to validate your email </p>
-        <a href= "${link}"> Validate your email: ${email} </a>
+        <h1>Validate your email</h1>
+        <p>Click on the following link to validate your email</p>
+        <a href="${ link }">Validate your email: ${email}</a>
         `
         const isSent = 
         this.emailservice.sendEmail(
@@ -104,7 +104,8 @@ export class UserService{
         const user = await User.findOne({
             where:{
                 email: loginUserDto.email,
-                status: Status.ACTIVE
+                status: Status.ACTIVE,
+                emailValidated: true
             }
         })
 
@@ -132,7 +133,7 @@ export class UserService{
 
     async findAllUser(){
         try {
-            return await User. find()
+            return await User.find()
         } catch (error) {
             throw CustomErrors.internalServer('Internal Server Error 🧨')
         }

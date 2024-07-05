@@ -62,7 +62,7 @@ export class User extends BaseEntity{
     
     @Column({
         type: 'boolean',
-        default: false
+        default: false,
     })
     emailValidated: boolean
 

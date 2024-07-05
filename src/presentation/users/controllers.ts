@@ -53,16 +53,12 @@ export class UserController{
 
     
     validateEmail = (req: Request, res: Response) => {
-        const  { token } = req.params
-        this.userService.validateEmail(token)
-        .then(() => {
-            res.json('Email was validated properly')
-        })
-        .catch(error =>{
-            this.handleError(error, res)
-        })
-
-    }
+        const { token } = req.params;
+    
+        this.userService.validateEmail( token )
+            .then(() => res.json('Email was validated properly'))
+            .catch(error => this.handleError(error, res))
+      }
 
     getUser = (req:Request, res:Response) => {
         this.userService.findAllUser()
