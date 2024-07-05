@@ -8,6 +8,11 @@ enum Status{
     INACTIVE = 'INACTIVE'
 }
 
+enum Role{
+    CLIENT =  'CLIENT',
+    EMPLOYEE = 'EMPLOYEE'
+}
+
 export class AuthMiddleware{
     
     static async protect(req: Request, res: Response, next: NextFunction){
@@ -31,7 +36,8 @@ export class AuthMiddleware{
                     where:{
                         id: payload.id,
                         status: Status.ACTIVE,
-                        emailValidated: true
+                        emailValidated: true,
+                        role: Role.EMPLOYEE
                     }                    
                 })
                 if(!user) return res.status(401).json({message:'Invalid user'})
