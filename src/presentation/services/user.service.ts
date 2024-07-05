@@ -186,4 +186,15 @@ export class UserService{
         }
     }
 
+    async getProfileUser(id:number){
+        const user = await User.findOne({
+            where:{
+                id: id,
+                status: Status.ACTIVE   
+            }
+        })
+        if(!user) throw CustomErrors.notFound('User not found')
+        return user
+    }
+
 }

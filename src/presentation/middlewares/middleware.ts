@@ -38,6 +38,8 @@ export class AuthMiddleware{
                 
                 // Tener en cuenta si se va a cambiar contraseña- validar los tiempos
 
+
+                req.body.sessionUser = user
                 next()
 
         } catch (error) {

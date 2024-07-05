@@ -112,4 +112,16 @@ export class UserController{
         .catch((error) => this.handleError(error, res))
     }
 
+    
+    getProfileUser = (req:Request, res:Response) =>{
+        const { id } = req.body.sessionUser
+
+        this.userService.getProfileUser(+id)
+        .then(user =>{
+            return res.status(200).json(user)
+        })
+        .catch((error) => this.handleError(error, res))
+
+    }
+
 }

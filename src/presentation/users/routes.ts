@@ -3,6 +3,7 @@ import { UserController } from "./controllers";
 import { UserService } from "../services/user.service";
 import { EmailService } from "../services/email.service";
 import { envs } from "../../config";
+import { AuthMiddleware } from "../middlewares/middleware";
 
 export class UsersRoutes{
 
@@ -29,6 +30,10 @@ export class UsersRoutes{
         router.delete('/:id', controller.deleteUser)
 
         router.get('/validate-email/:token', controller.validateEmail)
+
+        
+        router.use(AuthMiddleware.protect)
+        router.get('/profile', controller.getProfileUser)
 
 
         return router      
