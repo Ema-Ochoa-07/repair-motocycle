@@ -1,5 +1,6 @@
 import { Repair } from "../../data";
 import { CreateRepairDto, CustomErrors, UpdateRepairDto } from "../../domain";
+import { UserService } from "./user.service";
 
 enum Status{
     PENDING = 'PENDING',
@@ -9,16 +10,21 @@ enum Status{
 
 
 export class RepairService{
-    constructor() {}
+    constructor(
+        private readonly userService: UserService
+    ) {}
 
     async createRepair(repairData: CreateRepairDto){
 
-        try {
-            const repair = new Repair()
-            repair.date = repairData.date
-            repair.status = Status.PENDING
-            repair.user_id = repairData.userId
+        const userPromise = this.userService.getProfileUser( repairData.userId)
+        await Promise.all([userPromise])
 
+        const repair = new Repair()
+        repair.date = repairData.date
+        repair.status = Status.PENDING
+        repair.user_id = repairData.userId
+
+        try {
             await repair.save()
             return repair
         
