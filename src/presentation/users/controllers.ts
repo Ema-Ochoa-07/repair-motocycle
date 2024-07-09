@@ -10,22 +10,6 @@ export class UserController{
         public readonly userService : UserService
      ){}
 
-        //LOGIN
-        login = async (req: Request, res: Response) =>{
-            const [error, loginUserDto ] = LoginUserDto.create(req.body)
-
-            if(error) return res.status(422).json({message: error})
-            
-                this.userService.loginEmail(loginUserDto!)
-                .then((data) =>{
-                    return res.status(200).json(data)
-                })
-                .catch((error) => {
-                    return res.status(500).json(error)
-                })
-
-    }
-
 
      // REPEAT ERROR METHOD 
      private handleError = (error:any, res: Response) =>{
@@ -67,6 +51,20 @@ export class UserController{
         })
         .catch((error) => this.handleError(error, res))
     }
+
+    login = async (req: Request, res: Response) =>{
+        const [error, loginUserDto ] = LoginUserDto.create(req.body)
+
+        if(error) return res.status(422).json({message: error})
+        
+            this.userService.loginEmail(loginUserDto!)
+            .then((data) =>{
+                return res.status(200).json(data)
+            })
+            .catch((error) => {
+                return  this.handleError(error, res)
+            })
+}
 
     getUserById = (req:Request, res:Response) =>{
         const { id } = req.params

@@ -1,6 +1,8 @@
+import { In } from "typeorm";
 import { Repair } from "../../data";
 import { CreateRepairDto, CustomErrors, UpdateRepairDto } from "../../domain";
 import { UserService } from "./user.service";
+import { protectAccountOwner } from "../../config/validate-owner";
 
 enum Status{
     PENDING = 'PENDING',
@@ -35,7 +37,12 @@ export class RepairService{
 
     async findRepairsAll(){
         try {
-            return await Repair.find()
+            return await Repair.find({
+                where: { 
+                    // status: In([Status.PENDING, Status.COMPLETED]) 
+                    status: Status.PENDING  
+                    }
+                })
         } catch (error) {
             throw CustomErrors.internalServer('Internal Server Error 🧨')
         }
@@ -77,8 +84,11 @@ export class RepairService{
         }
       }
 
-      async deleteRepair(id: number){
+      async deleteRepair(id: number, userSessionId: number){
         const repair = await this.findRepairById(id)
+
+        const isOwner = protectAccountOwner(repair.user_id, userSessionId)
+        if(!isOwner)  throw CustomErrors.unAuthorized('You are not owner of this repair')
 
         repair.status = Status.CANCELLED
 

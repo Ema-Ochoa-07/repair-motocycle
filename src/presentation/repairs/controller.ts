@@ -74,12 +74,13 @@ constructor(
 
     deleteRepair = (req:Request, res:Response) =>{
         const { id } = req.params
+        const idSession = req.body.sessionUser.id
         
         if(isNaN(+id)){
             return res.status(400).json('El id debe ser un número')
         }
         
-        this.repairService.deleteRepair(+id)
+        this.repairService.deleteRepair(+id, idSession)
         .then(repair =>{
             return res.status(200).json(repair)
         })

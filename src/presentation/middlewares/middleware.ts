@@ -25,8 +25,7 @@ export class AuthMiddleware{
        
         const token = authorization.split(' ').at(1) || ''
 
-        try {
-            
+        try {            
             const payload = await JwtAdapter.validateToken<{ id: number }>(token)
             // console.log("PUNTO A:", payload)
             if(!payload) return res.status(401).json({message: 'Invalid token'}) 
@@ -51,6 +50,15 @@ export class AuthMiddleware{
         } catch (error) {
             return res.status(500).json({message: 'Internal server error'})
         }
+    }
+
+    static restrictTo = (...roles: any) => {
+        return (req: Request, res: Response, next: NextFunction) =>{
+            if(!roles.includes(req.body.sessionUser.role)){
+                return res.status(403).json({message: 'You are not authorized to access this route'})
+            }
+            next()
+        }   
     }
 }
 

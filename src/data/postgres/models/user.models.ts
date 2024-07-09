@@ -13,7 +13,7 @@ enum Status{
 
 @Entity()
 export class User extends BaseEntity{
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn() 
     id: number
 
     @Column({

@@ -4,6 +4,7 @@ import { User } from "../../data";
 import { CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain";
 import { EmailService } from "./email.service";
 import { LoginUserDto } from "../../domain/dtos/user/login-user.dto";
+import { protectAccountOwner } from "../../config/validate-owner";
 
 enum Status{
     ACTIVE = 'ACTIVE',
