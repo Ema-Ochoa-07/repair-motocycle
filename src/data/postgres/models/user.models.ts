@@ -1,5 +1,6 @@
-import { BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { bcryptAdapter } from "../../../config";
+import { Repair } from "./repair.models";
 
 enum Role{
     CLIENT =  'CLIENT',
@@ -65,6 +66,10 @@ export class User extends BaseEntity{
         default: false,
     })
     emailValidated: boolean
+
+    @OneToMany(() => Repair, (repair) => repair.user )
+    repairs: Repair[]
+
 
     @CreateDateColumn()
     create_at: Date

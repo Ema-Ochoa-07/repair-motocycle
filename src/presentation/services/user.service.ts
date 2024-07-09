@@ -192,6 +192,11 @@ export class UserService{
             where:{
                 id: id,
                 status: Status.ACTIVE   
+            },
+            relations:['repairs'],
+            select:{
+                id: true,
+                status:true
             }
         })
         if(!user) throw CustomErrors.notFound('User not found')

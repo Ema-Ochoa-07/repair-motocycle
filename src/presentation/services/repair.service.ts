@@ -19,12 +19,13 @@ export class RepairService{
     async createRepair(repairData: CreateRepairDto){
 
         const userPromise = this.userService.getProfileUser( repairData.userId)
-        await Promise.all([userPromise])
+        const  [userArrPromisse] = await Promise.all([userPromise])
 
         const repair = new Repair()
         repair.date = repairData.date
         repair.status = Status.PENDING
-        repair.user_id = repairData.userId
+        // repair.user_id = repairData.userId 
+        repair.user = userArrPromisse
 
         try {
             await repair.save()
@@ -41,6 +42,13 @@ export class RepairService{
                 where: { 
                     // status: In([Status.PENDING, Status.COMPLETED]) 
                     status: Status.PENDING  
+                    },
+                    relations:['user'],
+                    select:{
+                        user:{
+                            id: true,
+                            email: true
+                        }
                     }
                 })
         } catch (error) {
@@ -73,7 +81,6 @@ export class RepairService{
   
         repair.date = repairData.date
         repair.status = Status.PENDING
-        repair.user_id = repairData.userId
   
         try {
           await repair.save() 
@@ -87,7 +94,7 @@ export class RepairService{
       async deleteRepair(id: number, userSessionId: number){
         const repair = await this.findRepairById(id)
 
-        const isOwner = protectAccountOwner(repair.user_id, userSessionId)
+        const isOwner = protectAccountOwner(repair.user.id, userSessionId)
         if(!isOwner)  throw CustomErrors.unAuthorized('You are not owner of this repair')
 
         repair.status = Status.CANCELLED
