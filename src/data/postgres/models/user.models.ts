@@ -67,6 +67,16 @@ export class User extends BaseEntity{
     })
     emailValidated: boolean
 
+
+    @Column({
+        type: 'varchar',
+        nullable: false,
+        default: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.flaticon.es%2Ficono-gratis%2Fperfil-del-usuario_6326055&psig=AOvVaw2B39i0Gsqq54ZBfOOE_-2c&ust=1720666323554000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLias9m7m4cDFQAAAAAdAAAAABAE',
+        length: 255
+    })
+    avatar: string
+
+
     @OneToMany(() => Repair, (repair) => repair.user )
     repairs: Repair[]
 

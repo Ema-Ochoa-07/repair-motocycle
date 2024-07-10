@@ -25,9 +25,10 @@ export class UserController{
     createUser = (req:Request, res:Response) => {
         // const {name, email, password} = req.body
         const  [error, createUserDto] = CreateUserDto.create(req.body)
+
         if(error) return res.status(422).json({message: error})
         // this.userService.createUser({ name, email, password })
-        this.userService.createUser( createUserDto! )
+        this.userService.createUser( createUserDto!, req.file )
 
         .then(user =>{
             return res.status(200).json(user)

@@ -16,7 +16,7 @@ export class UserService{
         private readonly emailservice: EmailService
     ){}
 
-    async createUser(createUserDto: CreateUserDto){
+    async createUser(createUserDto: CreateUserDto, file:  Express.Multer.File| undefined){
 
         const exitsUser = await User.findOne({
             where:{
