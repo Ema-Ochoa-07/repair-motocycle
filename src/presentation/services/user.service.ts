@@ -5,6 +5,8 @@ import { CreateUserDto, CustomErrors, UpdateUserDto } from "../../domain";
 import { EmailService } from "./email.service";
 import { LoginUserDto } from "../../domain/dtos/user/login-user.dto";
 import { protectAccountOwner } from "../../config/validate-owner";
+import { generateUUID } from "../../config/generate-uuid.adapter";
+import { UploadFile } from "../../config/upload-file-cloud.adapter";
 
 enum Status{
     ACTIVE = 'ACTIVE',
@@ -24,6 +26,7 @@ export class UserService{
                 status: Status.ACTIVE
             }            
         })
+
         if(exitsUser)
             throw CustomErrors.badRequest('Email already exit')  
         
@@ -32,6 +35,13 @@ export class UserService{
         user.email = createUserDto.email
         user.password = bcryptAdapter.hash(createUserDto.password)
         // user.password = createUserDto.password
+
+        if(file?.originalname && file.originalname.length > 0){
+            const path = `users/${generateUUID()}-${file?.originalname}`
+            const photoUrl = await UploadFile.uploadToCloud(path, file?.buffer)
+            user.password = photoUrl
+        }
+
 
         try {
                       
