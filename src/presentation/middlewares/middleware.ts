@@ -36,7 +36,7 @@ export class AuthMiddleware{
                         id: payload.id,
                         status: Status.ACTIVE,
                         emailValidated: true,
-                        role: Role.EMPLOYEE
+                        // role: Role.EMPLOYEE
                     }                    
                 })
                 if(!user) return res.status(401).json({message:'Invalid user'})
