@@ -3,6 +3,7 @@ import { Repair } from "../../data";
 import { CreateRepairDto, CustomErrors, UpdateRepairDto } from "../../domain";
 import { UserService } from "./user.service";
 import { protectAccountOwner } from "../../config/validate-owner";
+import { UploadFile } from "../../config/upload-file-cloud.adapter";
 
 enum Status{
     PENDING = 'PENDING',
@@ -16,7 +17,8 @@ export class RepairService{
         private readonly userService: UserService
     ) {}
 
-    async createRepair(repairData: CreateRepairDto){
+    async createRepair(repairData: CreateRepairDto, 
+        files: Express.Multer.File[]){
 
         const userPromise = this.userService.getProfileUser( repairData.userId)
         const  [userArrPromisse] = await Promise.all([userPromise])
@@ -26,6 +28,9 @@ export class RepairService{
         repair.status = Status.PENDING
         // repair.user_id = repairData.userId 
         repair.user = userArrPromisse
+        
+        const imgs = await UploadFile.uploadMultipleFilesFirebase('repairs', files as Express.Multer.File[])
+        repair.imgs = imgs
 
         try {
             await repair.save()

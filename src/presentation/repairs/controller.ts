@@ -26,7 +26,7 @@ constructor(
         const [error, createRepairDto] = CreateRepairDto.create(req.body)
         if (error) return res.status(422).json({message: error})
 
-        this.repairService.createRepair(createRepairDto!)
+        this.repairService.createRepair(createRepairDto!, req.files as Express.Multer.File[])
         .then(repair => {
             return res.status(201).json(repair) 
         })

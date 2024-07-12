@@ -24,6 +24,13 @@ export class Repair extends BaseEntity{
         default: Status.PENDING
     })
     status: Status
+
+    @Column({
+        type: 'varchar',
+        array: true,
+        nullable: true
+    })
+    imgs: string[]
     
     @ManyToOne(() => User, (user) => user.repairs)
     user: User

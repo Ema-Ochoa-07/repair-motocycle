@@ -5,6 +5,7 @@ import { AuthMiddleware } from "../middlewares/middleware";
 import { UserService } from "../services/user.service";
 import { EmailService } from "../services/email.service";
 import { envs } from "../../config";
+import { uploadArr } from "../../config/upload-file.adapter";
 
 enum Role{
     CLIENT =  'CLIENT',
@@ -29,7 +30,7 @@ export class RepairsRoutes{
 
         router.use(AuthMiddleware.protect)
 
-        router.post('/', controller.createRepair)
+        router.post('/', uploadArr('imgs', 5), controller.createRepair)
         router.get('/',  AuthMiddleware.restrictTo(Role.EMPLOYEE), controller.getRepair)
         router.get('/:id', controller.getRepairById)
         router.patch('/:id', controller.updateRepair)
